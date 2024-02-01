@@ -1,0 +1,44 @@
+--1. Продукты за 50 грывэнь
+
+SELECT name, AVG(cost) AS mid_cost
+FROM products
+GROUP BY name
+HAVING AVG(cost) > 50;
+
+--2. Средняя цена продуктов за 100 грывэнь и больше
+
+SELECT category, COUNT(name) AS quantity
+FROM products
+GROUP BY category
+HAVING AVG(cost) > 100;
+
+--3.Только минимализм
+
+SELECT supplier_id, MIN(cost) AS min_cost
+FROM products
+WHERE date >= DATE_SUB(LAST_DAY(CURRENT_DATE), INTERVAL 1 MONTH)
+GROUP BY supplier_id
+ORDER BY min_cost ASC;
+
+
+--4. Вся инфа о сотруднике Apple 
+
+SELECT m.name AS dev, m.address AS adress, COUNT(p.id) AS quantity, SUM(s.total_price)
+FROM manufacturer m
+INNER JOIN product p ON m.id = p.manufacturer_id
+INNER JOIN sales s ON p.id = s.product_id
+GROUP BY m.name, m.address
+HAVING SUM(s.total_price) BETWEEN 500 AND 20000;
+
+--5. Проверка или бан
+
+SELECT p.category, COUNT(p.id) AS quantity
+FROM products p
+INNER JOIN delivery d ON p.id = d.product_id
+WHERE d.cost > 400
+AND d.employee_id IN (1, 2, 3) -- ID Трёх всадников апокалипсис
+GROUP BY p.category;
+
+
+
+
